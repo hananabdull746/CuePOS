@@ -3,7 +3,7 @@ require_once __DIR__.'/includes/bootstrap.php';
 $publicTitle='Start Free with CuePOS | Snooker Club Software';
 $publicDescription='Create a private CuePOS workspace for your Pakistani snooker club. Start free with one table and upgrade when you need more.';
 $publicCanonical=siteUrl('/trial.php');
-$selectedPlan=$_GET['plan']??'basic';
+$selectedPlan=$_GET['plan']??'pro';
 $error='';
 if($_SERVER['REQUEST_METHOD']==='POST'){
     verifyCsrf();
@@ -14,7 +14,7 @@ if($_SERVER['REQUEST_METHOD']==='POST'){
     $country=strtoupper(substr(sanitize($_POST['country_code']??''),0,2));
     $timezone=sanitize($_POST['timezone']??'UTC');
     $currency=currencyForCountry($country);
-    $planSlug=preg_replace('/[^a-z0-9_-]/','',strtolower($_POST['plan_slug']??'basic'));
+    $planSlug=preg_replace('/[^a-z0-9_-]/','',strtolower($_POST['plan_slug']??'pro'));
     if(!$owner||!$email||!$club||strlen($password)<10){
         $error='Please complete all required fields and choose a password with at least 10 characters.';
     }elseif(!in_array($timezone,timezone_identifiers_list(),true)){
@@ -83,7 +83,7 @@ $plans=publicPlans();
 
         <section class="form-shell">
             <div class="flex items-start justify-between gap-4 pb-6 border-b border-slate-200">
-                <div><div class="flex items-center gap-3"><span class="form-step">1</span><span class="text-xs font-extrabold uppercase tracking-[.13em] text-cue-deep">Create your workspace</span></div><h2 class="font-display text-3xl font-bold tracking-tight mt-4">Create your CuePOS workspace</h2><p class="text-sm text-slate-500 leading-6 mt-2">Start free with one table, then choose Basic or Pro when your club needs more.</p></div>
+                <div><div class="flex items-center gap-3"><span class="form-step">1</span><span class="text-xs font-extrabold uppercase tracking-[.13em] text-cue-deep">Create your workspace</span></div><h2 class="font-display text-3xl font-bold tracking-tight mt-4">Create your CuePOS workspace</h2><p class="text-sm text-slate-500 leading-6 mt-2">Start free with one table, then choose Pro or Premium as your club grows.</p></div>
                 <a class="text-sm font-bold text-slate-600 hover:text-ink whitespace-nowrap" href="<?=url('login.php')?>">Already a member?</a>
             </div>
             <?php if($error): ?><div class="form-message form-message-error mt-6 flex gap-3"><i class="fa-solid fa-circle-exclamation mt-0.5"></i><span><?=sanitize($error)?></span></div><?php endif; ?>
@@ -96,7 +96,7 @@ $plans=publicPlans();
                     <label class="field sm:col-span-2"><span class="field-label">Create password <span class="field-hint">10+ characters</span></span><input class="field-control" required autocomplete="new-password" type="password" minlength="10" name="password" placeholder="Choose a secure password"></label>
                     <label class="field"><span class="field-label">Country code <span class="field-hint">2 letters</span></span><input class="field-control uppercase" maxlength="2" autocomplete="country" name="country_code" placeholder="PK" value="<?=sanitize($_POST['country_code']??'')?>"></label>
                     <label class="field"><span class="field-label">Your time zone</span><select class="field-control field-select" name="timezone"><option value="UTC">UTC</option><?php foreach(['Asia/Karachi','Europe/London','America/New_York','Asia/Dubai','Australia/Sydney'] as $tz):?><option <?=($_POST['timezone']??'')===$tz?'selected':''?> value="<?=$tz?>"><?=$tz?></option><?php endforeach?></select></label>
-                    <label class="field sm:col-span-2"><span class="field-label">Choose your plan <span class="field-hint">Change anytime</span></span><select class="field-control field-select" name="plan_slug"><?php foreach($plans as $p):?><option <?=($selectedPlan===$p['slug']?'selected':'')?> value="<?=sanitize($p['slug'])?>"><?=sanitize($p['name'])?><?= $p['price_monthly']?' — Rs. '.number_format($p['price_monthly'],0).'/month':' — Free'?></option><?php endforeach?></select></label>
+                    <label class="field sm:col-span-2"><span class="field-label">Choose your plan <span class="field-hint">Change anytime</span></span><select class="field-control field-select" name="plan_slug"><?php foreach($plans as $p):?><option <?=($selectedPlan===$p['slug']?'selected':'')?> value="<?=sanitize($p['slug'])?>"><?=sanitize($p['name'])?><?= $p['price_monthly']?' — Rs. '.number_format($p['price_monthly'],0).'/table/month':' — Free'?></option><?php endforeach?></select></label>
                 </div>
                 <button class="btn-public btn-public-primary w-full mt-7" type="submit">Create my workspace <i class="fa-solid fa-arrow-right"></i></button>
                 <div class="form-trust"><i class="fa-solid fa-lock"></i><span>By continuing, you agree to the CuePOS <a class="marketing-link" href="<?=url('terms.php')?>">Terms</a> and <a class="marketing-link" href="<?=url('privacy.php')?>">Privacy Policy</a>. No payment information is needed for the Free Plan.</span></div>

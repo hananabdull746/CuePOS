@@ -1,13 +1,13 @@
-# CuePOS Pakistan pricing update
+# CuePOS Pakistan per-table pricing update
 
-This update configures CuePOS for Pakistani snooker clubs with the following public plans.
+CuePOS now uses a simple table-based model for Pakistani snooker clubs.
 
-| Plan | Monthly price | Tables | Included operations |
+| Plan | Monthly price | Table eligibility | Included operations |
 |---|---:|---:|---|
-| Free Plan | Free | 1 | Basic billing |
-| Basic Plan | Rs. 499 | Up to 5 | Core daily billing and player records |
-| Pro Plan | Rs. 999 | Unlimited | Café, reports, and complete club management |
+| Free Plan | Free | 1 table | Basic billing |
+| Pro Plan | Rs. 449 per table | Up to 10 tables | Daily billing and player records |
+| Premium Plan | Rs. 400 per table | More than 10 tables | Café, reporting, and full club management |
 
-For an **existing installation** that already has the SaaS tables, open phpMyAdmin, select the CuePOS database, choose **Import**, and upload `install/pakistan_pricing_update.sql`. The update preserves existing subscription records; it changes the former Starter plan into Basic and removes Enterprise from public pricing without deleting historic data.
+For an **existing installation** that already has the SaaS tables, open phpMyAdmin, select the CuePOS database, choose **Import**, and upload `install/pakistan_pricing_update.sql`. The migration keeps existing subscriptions valid, turns prior Starter or Basic records into Pro where needed, and preserves historical plans without deleting subscription data.
 
-For a **new installation**, use `install/cuepos_clean_install.sql` only. It already contains the Pakistan pricing setup, so no second pricing import is needed.
+For a **new installation**, use `install/cuepos_clean_install.sql` only. It already contains the correct Free, Pro, and Premium plan data, so no second pricing import is needed.

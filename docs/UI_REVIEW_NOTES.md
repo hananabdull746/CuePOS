@@ -18,6 +18,6 @@ The Players & CRM screen was also reviewed. Shared dark cards, high-contrast fil
 
 ## Pakistan pricing and dashboard refinement
 
-The Pakistan pricing page was visually reviewed with the Free Plan, Basic Plan at Rs. 499 per month, and Pro Plan at Rs. 999 per month. The three cards clearly communicate the table allowance and included operations, with Pro reserved as the highlighted complete-club plan.
+The Pakistan pricing page was visually reviewed with the Free Plan, Pro Plan at Rs. 449 per table per month for up to 10 tables, and Premium Plan at Rs. 400 per table per month for clubs with more than 10 tables. The three cards clearly communicate the table eligibility and included operations, with Premium highlighted for larger club operations.
 
 The dashboard was reviewed after the professional UX revision. It now uses neutral operational labels such as “Daily operations,” “Club performance,” “Table revenue,” “Operating costs,” and “Net cash position.” Coloured accents are limited to clear status and category cues, while the layout prioritises table availability, current operating status, practical shortcuts, and management reporting rather than promotional language.
