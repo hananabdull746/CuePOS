@@ -1,6 +1,5 @@
 -- CuePOS clean installer
 -- WARNING: Use only for a new or failed installation with NO real club data.
--- This resets every CuePOS table and installs the core schema, demo data, and SaaS extension.
 SET FOREIGN_KEY_CHECKS=0;
 DROP TABLE IF EXISTS `platform_settings`;
 DROP TABLE IF EXISTS `demo_requests`;
@@ -32,7 +31,6 @@ DROP TABLE IF EXISTS `rate_plans`;
 DROP TABLE IF EXISTS `users`;
 DROP TABLE IF EXISTS `clubs`;
 SET FOREIGN_KEY_CHECKS=1;
-
 
 -- Core CuePOS schema
 SET NAMES utf8mb4; SET FOREIGN_KEY_CHECKS=0;
@@ -114,7 +112,7 @@ INSERT INTO notifications (club_id,type,message) VALUES (1,'low_stock','Snooker 
 COMMIT;
 
 
--- SaaS extension
+-- SaaS extension with Pakistan pricing
 -- CuePOS SaaS extension. Run once on an existing CuePOS database after install/schema.sql.
 ALTER TABLE clubs ADD COLUMN slug VARCHAR(120) NULL AFTER name, ADD COLUMN country_code CHAR(2) NULL AFTER phone, ADD COLUMN timezone VARCHAR(64) NOT NULL DEFAULT 'UTC' AFTER country_code, ADD COLUMN locale VARCHAR(12) NOT NULL DEFAULT 'en' AFTER timezone, ADD COLUMN currency_code CHAR(3) NOT NULL DEFAULT 'USD' AFTER locale, ADD COLUMN tenant_status ENUM('trial','active','past_due','suspended','cancelled') NOT NULL DEFAULT 'active' AFTER currency_symbol, ADD COLUMN trial_ends_at DATETIME NULL AFTER tenant_status, ADD COLUMN onboarding_completed_at DATETIME NULL AFTER trial_ends_at, ADD UNIQUE KEY uq_club_slug(slug), ADD KEY idx_clubs_status(tenant_status);
 ALTER TABLE users ADD COLUMN is_platform_admin TINYINT(1) NOT NULL DEFAULT 0 AFTER is_active, ADD KEY idx_users_platform_admin(is_platform_admin);
@@ -124,8 +122,8 @@ CREATE TABLE club_memberships (id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,club_i
 CREATE TABLE trial_signups (id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,club_id INT UNSIGNED NOT NULL,owner_user_id INT UNSIGNED NOT NULL,email VARCHAR(190) NOT NULL,plan_id INT UNSIGNED NOT NULL,source VARCHAR(100) NULL,ip_address VARCHAR(45) NULL,created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,KEY idx_trial_email(email),CONSTRAINT fk_trial_club FOREIGN KEY(club_id) REFERENCES clubs(id) ON DELETE CASCADE,CONSTRAINT fk_trial_user FOREIGN KEY(owner_user_id) REFERENCES users(id) ON DELETE CASCADE,CONSTRAINT fk_trial_plan FOREIGN KEY(plan_id) REFERENCES plans(id)) ENGINE=InnoDB;
 CREATE TABLE demo_requests (id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,name VARCHAR(120) NOT NULL,email VARCHAR(190) NOT NULL,club_name VARCHAR(150) NOT NULL,country_code CHAR(2) NULL,message TEXT,status ENUM('new','contacted','qualified','closed') NOT NULL DEFAULT 'new',created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,KEY idx_demo_status_created(status,created_at)) ENGINE=InnoDB;
 CREATE TABLE platform_settings (id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,setting_key VARCHAR(100) NOT NULL UNIQUE,setting_value TEXT,updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP) ENGINE=InnoDB;
-INSERT INTO plans(slug,name,tagline,description,price_monthly,price_yearly,currency_code,table_limit,staff_limit,feature_flags,is_public,sort_order) VALUES ('starter','Starter','For focused single-venue clubs','Core live tables, POS, players, café and reports for a growing snooker club.',29,290,'USD',6,5,JSON_OBJECT('tv_display',true,'tournaments',false),1,1),('pro','Pro','For high-traffic clubs','Advanced reports, tournaments, TV display and a larger team for busy club operations.',79,790,'USD',18,15,JSON_OBJECT('tv_display',true,'tournaments',true),1,2),('enterprise','Enterprise','For multi-branch operations','Custom onboarding, multi-branch planning, expanded support and tailored operating controls.',0,0,'USD',100,100,JSON_OBJECT('tv_display',true,'tournaments',true,'priority_support',true),1,3);
-INSERT INTO subscriptions(club_id,plan_id,status,billing_interval,starts_at) SELECT c.id,(SELECT id FROM plans WHERE slug='starter'),'active','monthly',NOW() FROM clubs c WHERE NOT EXISTS (SELECT 1 FROM subscriptions s WHERE s.club_id=c.id);
+INSERT INTO plans(slug,name,tagline,description,price_monthly,price_yearly,currency_code,table_limit,staff_limit,feature_flags,is_public,sort_order) VALUES ('free','Free Plan','Start with one table','One table, basic billing and a simple way to experience CuePOS in your club.',0,0,'PKR',1,1,JSON_OBJECT('basic_billing',true,'cafe',false,'reports',false,'tournaments',false),1,1),('basic','Basic Plan','Built for growing clubs','Up to five tables with reliable daily billing, player records and essential club operations.',499,4990,'PKR',5,5,JSON_OBJECT('basic_billing',true,'cafe',false,'reports',false,'tournaments',false),1,2),('pro','Pro Plan','Run the complete club','Unlimited tables with café operations, full reporting and advanced club management.',999,9990,'PKR',9999,25,JSON_OBJECT('basic_billing',true,'cafe',true,'reports',true,'tournaments',true,'unlimited_tables',true),1,3);
+INSERT INTO subscriptions(club_id,plan_id,status,billing_interval,starts_at) SELECT c.id,(SELECT id FROM plans WHERE slug='basic'),'active','monthly',NOW() FROM clubs c WHERE NOT EXISTS (SELECT 1 FROM subscriptions s WHERE s.club_id=c.id);
 INSERT INTO club_memberships(club_id,user_id,membership_role,status,joined_at) SELECT u.club_id,u.id,u.role,'active',NOW() FROM users u WHERE NOT EXISTS (SELECT 1 FROM club_memberships m WHERE m.club_id=u.club_id AND m.user_id=u.id);
 UPDATE clubs SET slug=CONCAT('club-',id) WHERE slug IS NULL OR slug='';
 UPDATE users SET is_platform_admin=1 WHERE email='admin@demo.com';

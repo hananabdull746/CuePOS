@@ -15,3 +15,9 @@ The authenticated dashboard was reviewed after signing in with the seeded demo o
 The live-table floor was reviewed with eight available demo tables. The design presents each table as a concise operating card with a table identifier, status pill, plan context, central empty-state prompt, and a prominent session-start action. The structured card grid provides a clear visual scan path for a busy operator.
 
 The Players & CRM screen was also reviewed. Shared dark cards, high-contrast filter controls, contextual primary actions, tier labels, and a compact data table render consistently with the workspace design system. The module shows that legacy CRUD views now inherit the unified navigation, card, form, table, and typography treatment.
+
+## Pakistan pricing and dashboard refinement
+
+The Pakistan pricing page was visually reviewed with the Free Plan, Basic Plan at Rs. 499 per month, and Pro Plan at Rs. 999 per month. The three cards clearly communicate the table allowance and included operations, with Pro reserved as the highlighted complete-club plan.
+
+The dashboard was reviewed after the professional UX revision. It now uses neutral operational labels such as “Daily operations,” “Club performance,” “Table revenue,” “Operating costs,” and “Net cash position.” Coloured accents are limited to clear status and category cues, while the layout prioritises table availability, current operating status, practical shortcuts, and management reporting rather than promotional language.
