@@ -1,0 +1,1 @@
+<?php require_once __DIR__.'/_bootstrap.php';$term=trim($_GET['q']??'');$q=getDB()->prepare('SELECT id,name,phone,tier,loyalty_points FROM players WHERE club_id=? AND is_active=1 AND (name LIKE ? OR phone LIKE ?) ORDER BY name LIMIT 12');$q->execute([$_SESSION['club_id'],'%'.$term.'%','%'.$term.'%']);jsonResponse(true,'',['players'=>$q->fetchAll()]);

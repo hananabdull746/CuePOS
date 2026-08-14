@@ -1,0 +1,1 @@
+<?php require_once __DIR__.'/_bootstrap.php';$q=getDB()->prepare('SELECT id,name,category,price,stock_quantity FROM cafe_items WHERE club_id=? AND is_available=1 AND stock_quantity>0 ORDER BY category,name');$q->execute([$_SESSION['club_id']]);$items=$q->fetchAll();foreach($items as &$i)$i['price_formatted']=money($i['price']);jsonResponse(true,'',compact('items'));

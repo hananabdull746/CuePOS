@@ -1,0 +1,1 @@
+<?php require_once __DIR__.'/../includes/bootstrap.php'; requireLogin(); function postField(string $key, $default=null){return $_POST[$key] ?? $default;} function apiError(string $message): void { jsonResponse(false,$message); }
